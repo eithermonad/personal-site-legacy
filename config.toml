@@ -1,0 +1,75 @@
+baseurl = "/"
+languageCode = "en-us"
+theme = "hello-friend-ng"
+title = "Jamie Corkhill"
+
+[params]
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04 -0700"
+
+  # Metadata mostly used in document's head
+  description = "Homepage and blog by Jamie Corkhill"
+  keywords = "homepage, blog, science, informatics, development, programming"
+  images = [""]
+
+  # Directory name of your blog content (default is `content/posts`)
+  contentTypeName = "content/posts"
+
+  # Default theme "light" or "dark"
+  defaultTheme = "dark"
+
+  title = "Jamie Corkhill"
+  subtitle = "Software Developer"
+  readOtherPosts = "Read other posts"
+
+  [author]
+    name = "Jamie Corkhill"
+
+  [languages.en.params.logo]
+    logoText = "~/blog"
+    logoHomeLink = "/"
+  # or
+  #
+  # path = "/img/your-example-logo.svg"
+  # alt = "Your example logo alt text"
+
+	# You can create a language based menu
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "about"
+        name = "About"
+        url = "/about"
+      [[languages.en.menu.main]]
+        identifier = "blog"
+        name = "Blog"
+        url = "/posts"
+
+# Social icons
+  [[params.social]]
+    name = "twitter"
+    url  = "https://twitter.com/eithermonad"
+
+  [[params.social]]
+    name = "email"
+    url  = "mailto:jamie.corkhill@live.com"
+
+  [[params.social]]
+    name = "github"
+    url  = "https://github.com/JamieCorkhill"
+
+  [[params.social]]
+    name = "linkedin"
+    url  = "https://www.linkedin.com/in/jamie-corkhill-aaab76153/"
+
+# And you can even create generic menu
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "/about"
+  [[menu.main]]
+    identifier = "blog"
+    name       = "Blog"
+    url        = "/posts"
