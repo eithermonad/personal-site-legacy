@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>generics on Jamie Corkhill</title>
+    <link>/tags/generics/</link>
+    <description>Recent content in generics on Jamie Corkhill</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 14 Sep 2020 12:25:05 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/generics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Understanding Typescript Generics</title>
+      <link>/posts/understanding-typescript-generics/</link>
+      <pubDate>Mon, 14 Sep 2020 12:25:05 -0500</pubDate>
+      
+      <guid>/posts/understanding-typescript-generics/</guid>
+      <description>Introduction I would like to take what might be considered somewhat of an unusual approach when it comes to explaining Generics in this article by grounding my examples in real-life use cases. We&amp;rsquo;ll start by going through a real-world illustration where we can organically discover the pains of a world without Generics, for it&amp;rsquo;s said that the best way to understand a concept is to merely be pointed in the right direction such that you can make connections yourself.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Jamie Corkhill ">
+<meta name="description" content="Introduction I would like to take what might be considered somewhat of an unusual approach when it comes to explaining Generics in this article by grounding my examples in real-life use cases. We&amp;rsquo;ll start by going through a real-world illustration where we can organically discover the pains of a world without Generics, for it&amp;rsquo;s said that the best way to understand a concept is to merely be pointed in the right direction such that you can make connections yourself." />
+<meta name="keywords" content="homepage, blog, science, informatics, development, programming, generics, typescript, repository-pattern" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="/posts/understanding-typescript-generics/" />
+
+
+    <title>
+        
+            Understanding Typescript Generics :: Jamie Corkhill  — Software Developer
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.01bd3532e0e3c26e091b78775205232280e9e497674d20651219a39461d90d54.css">
+
+
+
+
+
+
+<meta itemprop="name" content="Understanding Typescript Generics">
+<meta itemprop="description" content="Introduction I would like to take what might be considered somewhat of an unusual approach when it comes to explaining Generics in this article by grounding my examples in real-life use cases. We&rsquo;ll start by going through a real-world illustration where we can organically discover the pains of a world without Generics, for it&rsquo;s said that the best way to understand a concept is to merely be pointed in the right direction such that you can make connections yourself.">
+<meta itemprop="datePublished" content="2020-09-14T12:25:05-05:00" />
+<meta itemprop="dateModified" content="2020-09-14T12:25:05-05:00" />
+<meta itemprop="wordCount" content="10199">
+<meta itemprop="image" content="/"/>
+
+
+
+<meta itemprop="keywords" content="generics,typescript,repository-pattern," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="/"/>
+
+<meta name="twitter:title" content="Understanding Typescript Generics"/>
+<meta name="twitter:description" content="Introduction I would like to take what might be considered somewhat of an unusual approach when it comes to explaining Generics in this article by grounding my examples in real-life use cases. We&rsquo;ll start by going through a real-world illustration where we can organically discover the pains of a world without Generics, for it&rsquo;s said that the best way to understand a concept is to merely be pointed in the right direction such that you can make connections yourself."/>
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2020-09-14 12:25:05 -0500 CDT" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">~/blog</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        48 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="/posts/understanding-typescript-generics/">Understanding Typescript Generics</a>
+      </h1>
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>I would like to take what might be considered somewhat of an unusual approach when it comes to explaining Generics in this article by grounding my examples in real-life use cases. We&rsquo;ll start by going through a real-world illustration where we can organically discover the pains of a world without Generics, for it&rsquo;s said that the best way to understand a concept is to merely be pointed in the right direction such that you can make connections yourself. That example will end with a semi-complex solution utilizing Generics, but I won&rsquo;t circle back and explain it until closer to the end of the article when we&rsquo;ve built the necessary pillars of understanding.</p>
+<p>Additionally, I&rsquo;d like to go a little further than most articles do by discussing some of the more advanced topics, such as generic use cases across design patterns like the Repository Pattern, approaches to error handling, monads, and more.</p>
+<h2 id="a-real-world-example">A Real-World Example</h2>
+<p>I want to enter into the world of Generics <strong>not</strong> by explaining what they are, but rather by providing an intuitive example for why they are useful. Suppose you&rsquo;ve been tasked with building a feature-rich dynamic list. You could call it an array, an <code>ArrayList</code>, a <code>List</code>, a <code>std::vector</code>, or whatever, depending upon your language background. Perhaps this data structure must have in-built or swappable buffer systems as well (like a circular buffer insertion option). It will be a wrapper around the normal JavaScript array so that we can work with our structure instead of plain arrays.</p>
+<p>The immediate issue you&rsquo;ll come across is that of constraints imposed by the type system. You can&rsquo;t, at this point, accept any type you want into a function or method in a nice clean way (we&rsquo;ll revisit this statement later).</p>
+<p>The only obvious solution is to replicate our data structure for all different types:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">intList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">IntegerList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">intList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">4</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stringList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">StringList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">stringList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;hello&#39;</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">UserList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Jamie&#39;</span>));
+</code></pre></div><p><em>The <code>.create()</code> syntax here might look arbitrary, and indeed, <code>new SomethingList()</code> would be more straight-forward, but you&rsquo;ll see why we use this static builder method later. Internally, the <code>create</code> method calls the constructor.</em></p>
+<p>This is terrible. We have a lot of logic within this collection structure, and we&rsquo;re blatantly duplicating it to support different use cases, completely breaking the DRY Principle in the process. When we decide to change our implementation, we&rsquo;ll have to manually propagate/reflect those changes across all structures and types we support, including user-defined types, as in the latter example above. Suppose the collection structure itself was 100 lines long - it would be a nightmare to maintain multiple different implementations where the only difference between them is types.</p>
+<p>An immediate solution that might come to mind, especially if you have an OOP mindset, is to consider a root &ldquo;supertype&rdquo;, if you will. In C#, for example, there consists a type by the name of <code>object</code>, and <code>object</code> is an alias for the <code>System.Object</code> class. In C#&rsquo;s type system, all types, be they predefined or user-defined and be they reference types or value types, inherit either directly or indirectly from <code>System.Object</code>. This means that any value can be assigned to a variable of type <code>object</code> (without getting into stack/heap and boxing/unboxing semantics).</p>
+<p>In this case, our issue appears solved. We can just use a type like <code>any</code> and that will allow us to store anything we want within our collection without having to duplicate the structure, and indeed, that&rsquo;s very true:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">intList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">intList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">4</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stringList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">stringList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;hello&#39;</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">create</span>();
+<span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Jamie&#39;</span>));
+</code></pre></div><p>Let&rsquo;s look at the actual implementation of our list using <code>any</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnyList</span> {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">any</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">any</span>[]) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">values</span>;
+
+        <span style="color:#75715e">// Some more construction work.
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">any</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">value</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">predicate</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">any</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">boolean</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">AnyList</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">predicate</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">any</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">any</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">AnyList</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">selector</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">toArray</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">any</span>[] {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">from</span>(<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">any</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">AnyList</span> {
+        <span style="color:#75715e">// Perhaps we perform some logic here.
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AnyList</span>(<span style="color:#a6e22e">values</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>(<span style="color:#a6e22e">values?</span>: <span style="color:#66d9ef">any</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">AnyList</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AnyList</span>(<span style="color:#a6e22e">values</span> <span style="color:#f92672">??</span> []);
+    }
+
+    <span style="color:#75715e">// Other collection functions.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>All the methods are relatively simple, but we&rsquo;ll start with the constructor. Its visibility is private, for we&rsquo;ll assume that our list is complex and we wish to disallow arbitrary construction. We also may want to perform logic prior to construction, so for these reasons, and to keep the constructor pure, we delegate these concerns to static helper methods, which is considered a good practice.</p>
+<p>The static methods <code>from</code> and <code>create</code> are provided. The method <code>from</code> accepts an array of values, performs custom logic, and then uses them to construct the list. The <code>create</code> static method takes an optional array of values for in the event that we want to seed our list with initial data. The &ldquo;nullish coalescing operator&rdquo; (<code>??</code>) is used to construct the list with an empty array in the event that one is not provided. If the left side of the operand is <code>null</code> or <code>undefined</code>, we&rsquo;ll fall back to the right side, for in this case, <code>values</code> is optional, and thus may be <code>undefined</code>.</p>
+<p>I&rsquo;ve also added a <code>select</code> and a <code>where</code> method. These methods just wrap JavaScript&rsquo;s <code>filter</code> and <code>map</code> respectively. <code>select</code> permits us to project an array of elements into a new form based on the provided selector function, and <code>where</code> permits us to filter out certain elements based on the provided predicate function. The <code>toArray</code> method simply converts the list to an array by returning the array reference we hold internally.</p>
+<p>Finally, suppose that the <code>User</code> class contains a <code>getName</code> method which returns a name and also accepts a name as its first and only constructor argument.</p>
+<blockquote>
+<p><em>Note: Some readers will recognize <code>Where</code> and <code>Select</code> from C#&rsquo;s LINQ, but keep in mind, I&rsquo;m trying to keep this simple, thus I&rsquo;m not worried about laziness or deferred execution. Those are optimizations that could and should be made in real life.</em></p>
+<p><em>Further, as an interesting note, I want to discuss the meaning of &ldquo;predicate&rdquo;. In Discreet Mathematics and Propositional Logic, we have the concept of a &ldquo;proposition&rdquo;. A proposition is some statement that can be considered true or false, such as &ldquo;four is divisible by two&rdquo;. A &ldquo;predicate&rdquo; is a proposition that contains one or more variables, thus the truthfulness of the proposition depends upon that of those variables. You can think about it like a function, such as <code>P(x) = x is divisible by two</code>, for we need to know the value of <code>x</code> to determine if the statement is true or false.</em></p>
+</blockquote>
+<p>There are a few issues that are going to arise from the use of <code>any</code>. The TypeScript compiler knows nothing about the elements inside the list/internal array, thus it won&rsquo;t provide any help inside of <code>where</code> or <code>select</code> or when adding elements:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// Providing seed data.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">AnyList</span>.<span style="color:#a6e22e">create</span>([<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Jamie&#39;</span>)]);
+
+<span style="color:#75715e">// This is fine and expected.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Tom&#39;</span>));
+<span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Alice&#39;</span>));
+
+<span style="color:#75715e">// This is an acceptable input to the TS Compiler,
+</span><span style="color:#75715e">// but it&#39;s not what we want. We&#39;ll definitely
+</span><span style="color:#75715e">// be surprised later to find strings in a list
+</span><span style="color:#75715e">// of users.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;Hello, World!&#39;</span>);
+
+<span style="color:#75715e">// Also acceptable. We have a large tuple
+</span><span style="color:#75715e">// at this point rather than a homogeneous array.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">0</span>);
+
+<span style="color:#75715e">// This compiles just fine despite the spelling mistake (extra &#39;s&#39;):
+</span><span style="color:#75715e">// The type of `users` is any.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">users</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">user</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">getNames</span>() <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;Jamie&#39;</span>);
+
+<span style="color:#75715e">// Property `ssn` doesn&#39;t even exist on a `user`, yet it compiles.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">users</span>.<span style="color:#a6e22e">toArray</span>()[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">ssn</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;000000000&#39;</span>;
+
+<span style="color:#75715e">// `usersWithId` is, again, just `any`.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">usersWithId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">user</span> <span style="color:#f92672">=&gt;</span> ({
+    <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">newUuid</span>(),
+    <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">user.getName</span>()
+}));
+
+<span style="color:#75715e">// Oops, it&#39;s &#34;id&#34; not &#34;ID&#34;, but TS doesn&#39;t help us. 
+</span><span style="color:#75715e">// We compile just fine.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">usersWithId</span>.<span style="color:#a6e22e">toArray</span>()[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">ID</span>);
+</code></pre></div><p>Since TypeScript only knows that the type of all array elements is <code>any</code>, it can&rsquo;t help us at compile time with the non-existent properties or the <code>getNames</code> function that doesn&rsquo;t even exist, thus this code will result in multiple unexpected runtime errors.</p>
+<p>To be honest, things are beginning to look quite dismal. We tried implementing our data structure for each concrete type we wished to support, but we quickly realized that that was not in any way maintainable. Then, we thought we were getting somewhere by using <code>any</code>, which is analogous to depending upon a root supertype in an inheritance chain from which all types derive, but we concluded that we lose type-safety with that method. What&rsquo;s the solution, then?</p>
+<p>It turns out that, at the beginning of the article, I lied (kind of):</p>
+<blockquote>
+<p>&ldquo;You can&rsquo;t, at this point, accept any type you want into a function or method in a nice clean way.&rdquo;</p>
+</blockquote>
+<p>You actually can, and that&rsquo;s where Generics come in. Notice I said &ldquo;at this point&rdquo;, for I was assuming we didn&rsquo;t know about Generics at that point in the article.</p>
+<p>I&rsquo;ll start by showing the full implementation of our List structure with Generics, and then we&rsquo;ll take a step back, discuss what they actually are, and determine their syntax more formally. I&rsquo;ve named it <code>TypedList</code> to differentiate from our earlier <code>AnyList</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[]) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">value</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">predicate</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">boolean</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">T</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">predicate</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">select</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">selector</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">toArray</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span>[] {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">U</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#75715e">// Perhaps we perform some logic here.
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values?</span>: <span style="color:#66d9ef">U</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span> <span style="color:#f92672">??</span> []);
+    }
+
+    <span style="color:#75715e">// Other collection functions.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ..
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>Let&rsquo;s try making the same mistakes as earlier once again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// Here&#39;s the magic. `TypedList` will operate on objects
+</span><span style="color:#75715e">// of type `User` due to the `&lt;User&gt;` syntax.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">User</span>&gt;([<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Jamie&#39;</span>)]);
+
+<span style="color:#75715e">// The compiler expects this.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Tom&#39;</span>));
+<span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>(<span style="color:#e6db74">&#39;Alice&#39;</span>));
+
+<span style="color:#75715e">// Argument of type &#39;0&#39; is not assignable to parameter 
+</span><span style="color:#75715e">// of type &#39;User&#39;. ts(2345)
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">0</span>);
+
+<span style="color:#75715e">// Property &#39;getNames&#39; does not exist on type &#39;User&#39;. 
+</span><span style="color:#75715e">// Did you mean &#39;getName&#39;? ts(2551)
+</span><span style="color:#75715e">// Note: TypeScript infers the type of `users` to be
+</span><span style="color:#75715e">// `TypedList&lt;User&gt;`
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">users</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">user</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">getNames</span>() <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;Jamie&#39;</span>);
+
+<span style="color:#75715e">// Property &#39;ssn&#39; does not exist on type &#39;User&#39;. ts(2339)
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">users</span>.<span style="color:#a6e22e">toArray</span>()[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">ssn</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;000000000&#39;</span>;
+
+<span style="color:#75715e">// TypeScript infers `usersWithId` to be of type
+</span><span style="color:#75715e">// `TypedList&lt;{ id: string, name: string }&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">usersWithId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">userList</span>.<span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">user</span> <span style="color:#f92672">=&gt;</span> ({
+    <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">newUuid</span>(),
+    <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">user.getName</span>()
+}));
+
+<span style="color:#75715e">// Property &#39;ID&#39; does not exist on type &#39;{ id: string; name: string; }&#39;. 
+</span><span style="color:#75715e">// Did you mean &#39;id&#39;? ts(2551)
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">usersWithId</span>.<span style="color:#a6e22e">toArray</span>()[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">ID</span>)
+</code></pre></div><p>As you can see, the TypeScript compiler is actively aiding us with type-safety. All of those comments are errors I receive from the compiler when attempting to compile this code. Generics have permitted us to specify a type that we wish to permit our list to operate on, and from that, TypeScript can tell the types of everything, all the way down to the properties of individual objects within the array.</p>
+<p>The types we provide can be as simple or complex as we want them to be. Here, you can see we can pass both primitives and complex interfaces. We could also pass other arrays, or classes, or anything:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">numberList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">number</span>&gt;();
+<span style="color:#a6e22e">numberList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">4</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stringList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">string</span>&gt;();
+<span style="color:#a6e22e">stringList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">3</span>);
+
+<span style="color:#75715e">// Example of a complex type
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IAircraft</span> {
+    <span style="color:#a6e22e">apuStatus</span>: <span style="color:#66d9ef">ApuStatus</span>;
+    <span style="color:#a6e22e">inboardOneRPM</span>: <span style="color:#66d9ef">number</span>;
+    <span style="color:#a6e22e">altimeter</span>: <span style="color:#66d9ef">number</span>;
+    <span style="color:#a6e22e">tcasAlert</span>: <span style="color:#66d9ef">boolean</span>;
+
+    <span style="color:#a6e22e">pushBackAndStart</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">ilsCaptureGlidescope</span>()<span style="color:#f92672">:</span> <span style="color:#66d9ef">boolean</span>;
+    <span style="color:#a6e22e">getFuelStats</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">IFuelStats</span>;
+    <span style="color:#a6e22e">getTCASHistory</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">ITCASHistory</span>;
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">aircraftList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">IAircraft</span>&gt;();
+<span style="color:#a6e22e">aircraftList</span>.<span style="color:#a6e22e">add</span>(<span style="color:#75715e">/* ... */</span>);
+
+<span style="color:#75715e">// Aggregate and generate report:
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stats</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">aircraftList</span>.<span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">=&gt;</span> ({
+    ...<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">getFuelStats</span>(),
+    ...<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">getTCASHistory</span>()
+}));
+
+</code></pre></div><p>The peculiar uses of <code>T</code> and <code>U</code> and <code>&lt;T&gt;</code> and <code>&lt;U&gt;</code> in the <code>TypedList&lt;T&gt;</code> implementation are examples of Generics in action. Having fulfilled our directive of constructing a type-safe collection structure, we&rsquo;ll leave this example behind for now, and we&rsquo;ll return to it once we understand what Generics actually are, how they work, and their syntax. When I&rsquo;m learning a new concept, I always like to begin by seeing a complex example of the concept in use, so that when I start learning the basics, I can make connections between the basic topics and the existing example I have in my head.</p>
+<h2 id="what-are-generics">What are Generics?</h2>
+<p>A simple manner by which to understand Generics is to consider them as relatively analogous to placeholders or variables but for types. That&rsquo;s not to say that you can perform the same operations upon a generic type placeholder as you can a variable, but a generic type placeholder could be thought of as some placeholder that represents a concrete type that will be used in the future. That is, using Generics is a method of writing programs in terms of types that are to be specified at a later point in time. The reason why this is useful is because it allows us to build data structures that are reusable across the different types they operate upon (or type-agnostic).</p>
+<p>That&rsquo;s not particularly the best of explanations, so to put it in more simple terms, as we&rsquo;ve seen, it is common in programming that we might need to build a function/class/data structure that will operate upon a certain type, but it is equally common that such a data structure needs to work across a variety of different types as well. If we were stuck in a position where we had to statically declare the concrete type upon which a data structure would operate at the time when we design the data structure (at compile time), we&rsquo;d very quickly find that we need to rebuild those structures in an almost-exactly-the-same-manner for every type we wish to support, as we saw in the examples above.</p>
+<p>Generics help us to solve this problem by permitting us to defer the requirement for a concrete type until it is actually known.</p>
+<h2 id="generics-in-typescript">Generics in TypeScript</h2>
+<p>We now have somewhat of an organic idea for why Generics are useful and we&rsquo;ve seen a slightly complicated example of them in practice. For most, the <code>TypedList&lt;T&gt;</code> implementation probably already makes a lot of sense, especially if you come from a statically-typed language background, but I can remember having a difficult time understanding the concept when I was first learning, thus I want to build up to that example by starting with simple functions. Concepts related to abstraction in software can be notoriously difficult to internalize, so if the notion of Generics has not quite clicked yet, that&rsquo;s completely fine, and hopefully, by this article&rsquo;s closing, the idea will be at least somewhat intuitive.</p>
+<p>To build up to being able to understand that example, let&rsquo;s work up from simple functions. We&rsquo;ll start with the &ldquo;Identity Function&rdquo;, which is what most articles, including the TypeScript documentation itself, like to use.</p>
+<p>An &ldquo;Identity Function&rdquo;, in mathematics, is a function that maps its input directly to its output, such as <code>f(x) = x</code>. What you put in is what you get out. We can represent that, in JavaScript, as:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">identity</span>(<span style="color:#a6e22e">input</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">input</span>;
+}
+</code></pre></div><p>Or, more tersely:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">identity</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">input</span> =&gt; <span style="color:#a6e22e">input</span>;
+</code></pre></div><p>Trying to port this to TypeScript brings back the same type system issues we saw before. The solutions are typing with <code>any</code>, which we know is seldom a good idea, duplicating/overloading the function for each type (breaks DRY), or using Generics.</p>
+<p>With the latter option, we can represent the function as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// ES5 Function
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">identity</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">input</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">input</span>;
+}
+
+<span style="color:#75715e">// Arrow Function
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">identity</span> <span style="color:#f92672">=</span> &lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">input</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">input</span>;
+
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">identity</span>&lt;<span style="color:#f92672">number</span>&gt;(<span style="color:#ae81ff">5</span>));       <span style="color:#75715e">// 5
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">identity</span>&lt;<span style="color:#f92672">string</span>&gt;(<span style="color:#e6db74">&#39;hello&#39;</span>)); <span style="color:#75715e">// hello
+</span></code></pre></div><p>The <code>&lt;T&gt;</code> syntax here declares this function as Generic. Just like a function allows us to pass an arbitrary input parameter into its argument list, with a Generic function, we can pass an arbitrary type parameter as well.</p>
+<p>The <code>&lt;T&gt;</code> part of the signature of <code>identity&lt;T&gt;(input: T): T</code> and <code>&lt;T&gt;(input: T): T</code> in both cases declares that the function in question will accept one generic type parameter named <code>T</code>. Just like how variables can be of any name, so can our Generic placeholders, but it&rsquo;s a convention to use a capital letter &ldquo;T&rdquo; (&ldquo;T&rdquo; for &ldquo;Type&rdquo;) and to move down the alphabet as needed. Remember, <code>T</code> is a type, so we also state that we will accept one function argument of name <code>input</code> with a type of <code>T</code> and that our function will return a type of <code>T</code>. That&rsquo;s all the signature is saying. Try letting <code>T = string</code> in your head - replace all the <code>T</code>s with <code>string</code> in those signatures. See how nothing all that magical is going on? See how similar it is to the non-generic way you use functions every day?</p>
+<p>Keep in mind what you already know about TypeScript and function signatures. All we&rsquo;re saying is that <code>T</code> is an arbitrary type that the user will provide when calling the function, just like <code>input</code> is an arbitrary value that the user will provide when calling the function. In this case, <code>input</code> must be whatever that type <code>T</code> is when the function is called in the <strong>future</strong>.</p>
+<p>Next, in the &ldquo;future&rdquo;, in the two log statements, we &ldquo;pass in&rdquo; the concrete type we wish to use, just like we do a variable. Notice the switch in verbiage here - in the initial form of <code>&lt;T&gt; signature</code>, when declaring our function, it is generic - that is, it works on generic types, or types to be specified later. That&rsquo;s because we don&rsquo;t know what type the caller will wish to use when we actually write the function. But, when the caller calls the function, he/she knows exactly what type(s) they want to work with, which are <code>string</code> and <code>number</code> in this case.</p>
+<p>You can imagine the idea of having a log function declared this way in a third-party library - the library author has no idea what types the developers who use the lib will want to use, so they make the function generic, essentially <em>deferring the need for concrete types until they are actually known.</em></p>
+<p>I want to stress that you <strong>should</strong> think of this process in a similar way that you do the notion of passing a variable to a function for the purposes of gaining more intuitive of an understanding. All we&rsquo;re doing now is passing a type too.</p>
+<p>At the point where we called the function with the <code>number</code> parameter, the original signature, for all intents and purposes, could be thought of as <code>identity(input: number): number</code>. And, at the point where we called the function with the <code>string</code> parameter, again, the original signature might just as well have been <code>identity(input: string): string</code>. You can imagine that, when making the call, every generic <code>T</code> gets replaced with the concrete type you provide at that moment.</p>
+<h3 id="exploring-generic-syntax">Exploring Generic Syntax</h3>
+<p>There are different syntaxes and semantics for specifying generics in the context of ES5 Functions, Arrow Functions, Type Aliases, Interfaces, and Classes. We&rsquo;ll explore those differences in this section.</p>
+<h3 id="exploring-generic-syntax---functions">Exploring Generic Syntax - Functions</h3>
+<p>You&rsquo;ve seen a few examples of generic functions by now, but it&rsquo;s important to note that a generic function can accept more than one generic type parameter, just like it can variables. You could choose to ask for one, or two, or three, or however many types you want, all separated by commas (again, just like input arguments).</p>
+<p>This function accepts three input types and randomly returns one of them:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">randomValue</span>&lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+    <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>, 
+    <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>, 
+    <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+)<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span>  {
+    <span style="color:#75715e">// This is a tuple if you&#39;re not familiar.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">options</span><span style="color:#f92672">:</span> [<span style="color:#a6e22e">T</span>, <span style="color:#a6e22e">U</span>, <span style="color:#a6e22e">V</span>] <span style="color:#f92672">=</span> [
+        <span style="color:#a6e22e">one</span>,
+        <span style="color:#a6e22e">two</span>,
+        <span style="color:#a6e22e">three</span>
+    ];
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">rndNum</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getRndNumInInclusiveRange</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>);
+
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">options</span>[<span style="color:#a6e22e">rndNum</span>];
+}
+
+<span style="color:#75715e">// Calling the function.
+</span><span style="color:#75715e">// `value` has type `string | number | IAircraft`
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">randomValue</span><span style="color:#f92672">&lt;</span>
+    <span style="color:#66d9ef">string</span>,
+    <span style="color:#66d9ef">number</span>,
+    <span style="color:#a6e22e">IAircraft</span>
+<span style="color:#f92672">&gt;</span>(
+    <span style="color:#a6e22e">myString</span>,
+    <span style="color:#a6e22e">myNumber</span>,
+    <span style="color:#a6e22e">myAircraft</span>
+);
+</code></pre></div><p>You can also see that the syntax is slightly different depending on whether we use an ES5 Function or an Arrow Function, but both declare the type parameters in the signature:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">randomValue</span> <span style="color:#f92672">=</span> &lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+    <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>, 
+    <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>, 
+    <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+)<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span> <span style="color:#f92672">=&gt;</span> {
+    <span style="color:#75715e">// This is a tuple if you&#39;re not familiar.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">options</span><span style="color:#f92672">:</span> [<span style="color:#a6e22e">T</span>, <span style="color:#a6e22e">U</span>, <span style="color:#a6e22e">V</span>] <span style="color:#f92672">=</span> [
+        <span style="color:#a6e22e">one</span>,
+        <span style="color:#a6e22e">two</span>,
+        <span style="color:#a6e22e">three</span>
+    ];
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">rndNum</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getRndNumInInclusiveRange</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>);
+
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">options</span>[<span style="color:#a6e22e">rndNum</span>];
+}
+</code></pre></div><p>Keep in mind that there is no &ldquo;uniqueness constraint&rdquo; forced on the types - you could pass in any combination you wish, such as two <code>string</code>s and a <code>number</code>, for instance. Additionally, just like the input arguments are &ldquo;in scope&rdquo; for the body of the function, so are the generic type parameters. The former example demonstrates that we have full access to <code>T</code>, <code>U</code>, and <code>V</code> from within the body of the function, and we used them to declare a local 3-tuple.</p>
+<p>You can imagine that these generics operate over a certain &ldquo;context&rdquo; or within a certain &ldquo;lifetime&rdquo;, and that depends on where they&rsquo;re declared. Generics on functions are in scope within the function signature and body (and closures created by nested functions), while generics declared on a class or interface or type alias are in scope for all members of the class or interface or type alias.</p>
+<p>The notion of generics on functions is not limited to &ldquo;free functions&rdquo; or &ldquo;floating functions&rdquo; (functions not attached to an object or class, a C++ term), but they can also be used on functions attached to other structures, too.</p>
+<p>We can place that <code>randomValue</code> in a class and we can call it just the same:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Utils</span> {
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">randomValue</span>&lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+        <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>, 
+        <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>, 
+        <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+    )<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span> {
+        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#75715e">// Or, as an arrow function:
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">randomValue</span> <span style="color:#f92672">=</span> &lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+        <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>, 
+        <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>, 
+        <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+    )<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span> <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><p>We could also place a definition within an interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUtils</span> {
+    <span style="color:#a6e22e">randomValue</span>&lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+        <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>,
+        <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>,
+        <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+    )<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span>;
+}
+</code></pre></div><p>Or within a type alias:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">Utils</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">randomValue</span>&lt;<span style="color:#f92672">T</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">U</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">V</span>&gt;(
+        <span style="color:#a6e22e">one</span>: <span style="color:#66d9ef">T</span>,
+        <span style="color:#a6e22e">two</span>: <span style="color:#66d9ef">U</span>,
+        <span style="color:#a6e22e">three</span>: <span style="color:#66d9ef">V</span>
+    )<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">U</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">V</span>;
+}
+</code></pre></div><p>Just like before, these generic type parameters are &ldquo;in scope&rdquo; for that particular function - they are not class, or interface, or type alias-wide. They live only within the particular function upon which they&rsquo;re specified. To share a generic type across all members of a structure, you must annotate the structure&rsquo;s name itself, as we&rsquo;ll see below.</p>
+<h3 id="exploring-generic-syntax---type-aliases">Exploring Generic Syntax - Type Aliases</h3>
+<p>With Type Aliases, the generic syntax is used on the alias&rsquo;s name.</p>
+<p>For instance, some &ldquo;action&rdquo; function that accepts a value, mutates that value, but returns void could be written as:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">Action</span>&lt;<span style="color:#f92672">T</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">val</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+</code></pre></div><blockquote>
+<p><em>This should be familiar to C# developers who understand the Action<!-- raw HTML omitted --> delegate.</em></p>
+</blockquote>
+<p>Or, a callback function that accepts both an error and a value could be declared as such:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">CallbackFunction</span>&lt;<span style="color:#f92672">T</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">Error</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">usersApi</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">uri</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cb</span>: <span style="color:#66d9ef">CallbackFunction</span>&lt;<span style="color:#f92672">User</span>&gt;) {
+        <span style="color:#75715e">/// ...
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><p>With our knowledge of function generics, we could go further and make the function on the API object generic too:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">CallbackFunction</span>&lt;<span style="color:#f92672">T</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">Error</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">api</span> <span style="color:#f92672">=</span> {
+    <span style="color:#75715e">// `T` is available for use within this function.
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">uri</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cb</span>: <span style="color:#66d9ef">CallbackFunction</span>&lt;<span style="color:#f92672">T</span>&gt;) {
+        <span style="color:#75715e">/// ...
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><p>Now, we&rsquo;re saying that the <code>get</code> function accepts some generic type parameter, and whatever that is, <code>CallbackFunction</code> receives it. We&rsquo;ve essentially &ldquo;passed&rdquo; the <code>T</code> that goes into <code>get</code> as the <code>T</code> for <code>CallbackFunction</code>. Perhaps this would make more sense if we change the names:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">CallbackFunction</span>&lt;<span style="color:#f92672">TData</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">Error</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">TData</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">api</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">TResponse</span>&gt;(<span style="color:#a6e22e">uri</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cb</span>: <span style="color:#66d9ef">CallbackFunction</span>&lt;<span style="color:#f92672">TResponse</span>&gt;) {
+        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><p>Prefixing type params with <code>T</code> is merely a convention, just like prefixing interfaces with <code>I</code> or member variables with <code>_</code>. What you can see here is that <code>CallbackFunction</code> accepts some type (<code>TData</code>) which represents the data payload available to the function, while <code>get</code> accepts a type parameter that represents the HTTP Response data type/shape (<code>TResponse</code>). The HTTP Client (<code>api</code>), similar to Axios, uses whatever that <code>TResponse</code> is as the <code>TData</code> for <code>CallbackFunction</code>. This allows the API caller to select the data type they&rsquo;ll be receiving back from the API (suppose somewhere else in the pipeline we have middleware that parses the JSON into a DTO).</p>
+<p>If we wanted to take this a little further, we could modify the generic type parameters on <code>CallbackFunction</code> to accept a custom error type as well:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">CallbackFunction</span>&lt;<span style="color:#f92672">TData</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">TError</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">TError</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">TData</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+</code></pre></div><p>And, just like you can make function arguments optional, you can with type parameters too. In the event that the user does not provide an error type, we&rsquo;ll set it to the error constructor by default:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">type</span> <span style="color:#a6e22e">CallbackFunction</span>&lt;<span style="color:#f92672">TData</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">TError </span><span style="color:#f92672">=</span> <span style="color:#a6e22e">Error</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">TError</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">TData</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>;
+</code></pre></div><p>With this, we can now specify a callback function type in multiple ways:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">apiOne</span> <span style="color:#f92672">=</span> {
+    <span style="color:#75715e">// `Error` is used by default for `CallbackFunction`.
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">TResponse</span>&gt;(<span style="color:#a6e22e">uri</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cb</span>: <span style="color:#66d9ef">CallbackFunction</span>&lt;<span style="color:#f92672">TResponse</span>&gt;) {
+        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    }
+};
+
+<span style="color:#a6e22e">apiOne</span>.<span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">string</span>&gt;(<span style="color:#e6db74">&#39;uri&#39;</span>, (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">Error</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> {
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>});
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">apiTwo</span> <span style="color:#f92672">=</span> {
+    <span style="color:#75715e">// Override the default and use `HttpError` instead.
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">TResponse</span>&gt;(<span style="color:#a6e22e">uri</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cb</span>: <span style="color:#66d9ef">CallbackFunction</span>&lt;<span style="color:#f92672">TResponse</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">HttpError</span>&gt;) {
+        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    }
+};
+
+<span style="color:#a6e22e">apiTwo</span>.<span style="color:#a6e22e">get</span>&lt;<span style="color:#f92672">string</span>&gt;(<span style="color:#e6db74">&#39;uri&#39;</span>, (<span style="color:#a6e22e">err</span>: <span style="color:#66d9ef">HttpError</span>, <span style="color:#a6e22e">data</span>: <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> {
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>});
+</code></pre></div><p>This idea of default parameters is acceptable across functions, classes, interfaces, etc. - it&rsquo;s not just limited to type aliases. In all the examples we&rsquo;ve seen so far, we could have assigned any type parameter we wanted to a default value. Type Aliases, just like functions, can take as many generic type parameters as you wish.</p>
+<h3 id="exploring-generic-syntax---interfaces">Exploring Generic Syntax - Interfaces</h3>
+<p>As you&rsquo;ve seen, a generic type parameter can be provided to a function on an interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUselessFunctions</span> {
+    <span style="color:#75715e">// Not generic
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printHelloWorld</span>();
+
+    <span style="color:#75715e">// Generic
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">identity</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">t</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span>;
+}
+</code></pre></div><p>In this case, <code>T</code> lives only for the <code>identity</code> function as its input and return type.</p>
+<p>We can also make a type parameter available to all members of an interface, just like with classes and type aliases, by specifying that the interface itself accepts a generic. We&rsquo;ll talk about the Repository Pattern a little later when we discuss more complex use cases for generics, so it&rsquo;s alright if you&rsquo;ve never heard of it. The Repository Pattern permits us to abstract away our data storage as to make business logic persistence-agnostic. If you wished to create a generic repository interface that operated on unknown entity types, we could type it as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IRepository</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">entity</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">findById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt;;
+    <span style="color:#a6e22e">updateById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">updated</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">removeById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+}
+</code></pre></div><blockquote>
+<p><em>There are many different thoughts around Repositories, from Martin Fowler&rsquo;s definition to the DDD Aggregate definition. I&rsquo;m merely attempting to show a use case for generics, so I&rsquo;m not too concerned with being fully correct implementation-wise. There&rsquo;s definitely something to be said for not using generic repositories, but we&rsquo;ll talk about that later.</em></p>
+</blockquote>
+<p>As you can see here, <code>IRepository</code> is an interface that contains methods for storing and retrieving data. It operates on some generic type parameter named <code>T</code>, and <code>T</code> is used as input to <code>add</code> and <code>updateById</code>, as well as the promise resolution result of <code>findById</code>.</p>
+<p>Keep in mind that there&rsquo;s a very big difference between accepting a generic type parameter on the interface name as opposed to allowing each function itself to accept a generic type parameter. The former, as we&rsquo;ve done here, ensures that each function within the interface operates on the same type <code>T</code>. That is, for an <code>IRepository&lt;User&gt;</code>, every method that uses <code>T</code> in the interface is now working on <code>User</code> objects. With the latter method, each function would be allowed to work with whatever type it wants. It would be very peculiar to only be able to add <code>User</code>s to the Repository but be able to receive <code>Policies</code> or <code>Orders</code> back, for instance, which is the potential situation we&rsquo;d find ourselves in if we couldn&rsquo;t enforce that the type is uniform across all methods.</p>
+<p>A given interface can contain not only a shared type, but also types unqiue to its members. For instance, if we wanted to mimic an array, we could type an interface like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IArray</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>;
+    <span style="color:#a6e22e">map</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">IArray</span>&lt;<span style="color:#f92672">U</span>&gt;;
+}
+</code></pre></div><p>In this case, both <code>forEach</code> and <code>map</code> have access to <code>T</code> from the interface name. As stated, you can imagine that <code>T</code> is in scope for all members of the interface. Despite that, nothing stops individual functions within from accepting their own type parameters as well. The <code>map</code> function does, with <code>U</code>. Now, <code>map</code> has access to both <code>T</code> and <code>U</code>. We had to name the parameter a different letter, like <code>U</code>, because <code>T</code> is already taken and we don&rsquo;t want a naming collision. Quite like its name, <code>map</code> will &ldquo;map&rdquo; elements of type <code>T</code> within the array to new elements of type <code>U</code>. It maps <code>T</code>s to <code>U</code>s. The return value of this function is the interface itself, now operating on the new type <code>U</code>, so that we can somewhat mimic JavaScript&rsquo;s fluent chainable syntax for arrays.</p>
+<p>We&rsquo;ll see an example of the power of Generics and Interfaces shortly when we implement the Repository Pattern and discuss Dependency Injection. Once again, we can accept as many generic parameters as well as select one or more default parameters stacked at the end of an interface.</p>
+<h3 id="exploring-generic-syntax---classes">Exploring Generic Syntax - Classes</h3>
+<p>Much the same as we can pass a generic type parameter to a type alias, function, or interface, we can pass one or more to a class as well. Upon doing so, that type parameter will be accessible to all members of that class as well as extended base classes or implemented interfaces.</p>
+<p>Let&rsquo;s build another collection class, but a little simpler than <code>TypedList</code> above, so that we can see the interop between generic types, interfaces, and members. We&rsquo;ll see an example of passing a type to a base class and interface inheritance a little later.</p>
+<p>Our collection will merely support basic CRUD functions in addition to a <code>map</code> and <code>forEach</code> method.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">elements</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">elements</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> []) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">elements</span>;
+    }
+	
+	<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">contains</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">boolean</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">existing</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">existing</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span>);
+	}
+	
+	<span style="color:#a6e22e">map</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">U</span>&gt; {
+	    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">func</span>));
+	}
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stringCollection</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">string</span>&gt;();
+<span style="color:#a6e22e">stringCollection</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;Hello, World!&#39;</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">numberCollection</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">number</span>&gt;();
+<span style="color:#a6e22e">numberCollection</span>.<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">3.14159</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">aircraftCollection</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Collection</span>&lt;<span style="color:#f92672">IAircraft</span>&gt;();
+<span style="color:#a6e22e">aircraftCollection</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">myAircraft</span>);
+</code></pre></div><p>Let&rsquo;s discuss what&rsquo;s going on here. The <code>Collection</code> class accepts one generic type parameter named <code>T</code>. That type becomes accessible to all members of the class. We use it to define a private array of type <code>T[]</code>, which we could also have denoted in the form <code>Array&lt;T&gt;</code> (See? Generics again for normal TS array typing). Further, most member functions utilize that <code>T</code> in some way, such as by controlling the types that are added and removed or checking if the collection contains an element.</p>
+<p>Finally, as we&rsquo;ve seen before, the <code>map</code> method requires its own generic type parameter. We need to define in the signature of <code>map</code> that some type <code>T</code> is mapped to some type <code>U</code> through a callback function, thus we need a <code>U</code>. That <code>U</code> is unique to that function in particular, which means we could have another function in that classes that also accepts some type named <code>U</code>, and that&rsquo;d be fine, because those types are only &ldquo;in scope&rdquo; for their functions and not shared across them, thus there are no naming collisions. What we can&rsquo;t do is have another function that accepts a generic parameter named <code>T</code>, for that&rsquo;d conflict with the <code>T</code> from the class signature.</p>
+<p>You can see that when we call the constructor, we pass in the type we want to work with (that is, what type each element of the internal array will be). In the calling code at the bottom of the example, we work with <code>string</code>s, <code>number</code>s, and <code>IAircraft</code>s.</p>
+<p>How could we make this work with an interface? What if we have different collection interfaces that we might want to swap out or inject into calling code? To get that level of reduced coupling (low coupling and high cohesion is what we should always aim for), we&rsquo;ll need to depend on an abstraction. Generally, that abstraction will be an interface, but it could also be an abstract class.</p>
+<p>Our collection interface will need to be generic, so let&rsquo;s define it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICollection</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">t</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span>;
+	<span style="color:#a6e22e">contains</span>(<span style="color:#a6e22e">t</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">boolean</span>;
+	<span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">t</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span>;
+	<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span>;
+	<span style="color:#a6e22e">map</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">ICollection</span>&lt;<span style="color:#f92672">U</span>&gt;;
+}
+</code></pre></div><p>Now, let&rsquo;s suppose we have different kinds of collections. We could have an in-memory collection, one that stores data on disk, one that uses a database, etc. By having an interface, the dependent code can depend upon the abstraction, permitting us to swap out different implementations without affecting the existing code. Here is the in-memory collection.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InMemoryCollection</span>&lt;<span style="color:#f92672">T</span>&gt; <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">ICollection</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">elements</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">elements</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> []) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">elements</span>;
+    }
+	
+	<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">contains</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">boolean</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">existing</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">existing</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">elem</span>);
+	}
+	
+	<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">void</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">func</span>);
+	}
+	
+	<span style="color:#a6e22e">map</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">func</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">elem</span>: <span style="color:#66d9ef">T</span>, <span style="color:#a6e22e">index</span>: <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">ICollection</span>&lt;<span style="color:#f92672">U</span>&gt; {
+	    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">InMemoryCollection</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">elements</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">func</span>));
+	}
+}
+</code></pre></div><p>The interface describes the public-facing methods and properties that our class is required to implement, expecting you to pass in a concrete type that those methods will operate upon. However, at the time of defining the class, we still don&rsquo;t know what type the API caller will wish to use. Thus, we make the class generic too - that is, <code>InMemoryCollection</code> expects to receive some generic type <code>T</code>, and whatever it is, it&rsquo;s immediately passed to the interface, and the interface methods are implemented using that type.</p>
+<p>Calling code can now depend on the interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// Using type annotation to be explicit for the purposes of the
+</span><span style="color:#75715e">// tutorial.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userCollection</span>: <span style="color:#66d9ef">ICollection</span>&lt;<span style="color:#f92672">User</span>&gt; <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">InMemoryCollection</span>&lt;<span style="color:#f92672">User</span>&gt;();
+
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">manageUsers</span>(<span style="color:#a6e22e">userCollection</span>: <span style="color:#66d9ef">ICollection</span>&lt;<span style="color:#f92672">User</span>&gt;) {
+    <span style="color:#a6e22e">userCollection</span>.<span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">User</span>());
+}
+</code></pre></div><p>With this, any kind of collection can be passed into the <code>manageUsers</code> function as long as it satisfies the interface. This is useful for testing scenarios - rather than dealing with over-the-top mocking libraries, in unit and integration test scenarios, I can replace my <code>SqlServerCollection&lt;T&gt;</code> (for example) with <code>InMemoryCollection&lt;T&gt;</code> instead and perform <em>state-based assertions</em> instead of interaction-based assertions. This setup makes my tests agnostic to implementation details, which means they are, in turn, less likely to break when refactoring the SUT.</p>
+<p>At this point, we should have worked up to the point where we can understand that first <code>TypedList&lt;T&gt;</code> example. Here it is again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[]) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">void</span> {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">value</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">predicate</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">boolean</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">T</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">predicate</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">select</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">selector</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">toArray</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">T</span>[] {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">U</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#75715e">// Perhaps we perform some logic here.
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values?</span>: <span style="color:#66d9ef">U</span>[])<span style="color:#f92672">:</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span> <span style="color:#f92672">??</span> []);
+    }
+
+    <span style="color:#75715e">// Other collection functions.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ..
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>The class itself accepts a generic type parameter named <code>T</code>, and all members of the class are provided access to it. The instance method <code>select</code> and the two static methods <code>from</code> and <code>create</code>, which are builders, accept their own generic type parameter named <code>U</code>.</p>
+<p>The <code>create</code> static method permits the construction of a list with optional seed data. It accepts some type named <code>U</code> to be the type of every element in the list as well as an optional array of <code>U</code> elements, typed as <code>U[]</code>. When it calls the list&rsquo;s constructor with <code>new</code>, it passes that type <code>U</code> as the generic parameter to <code>TypedList</code>. This creates a new list where the type of every element is <code>U</code>. It is exactly the same as how we could call the constructor of our collection class earlier with <code>new Collection&lt;SomeType&gt;()</code>. The only difference is that the generic type is now passing through the <code>create</code> method rather than being provided and used at the top-level.</p>
+<p>I want to make sure this is really, really clear. I&rsquo;ve stated a few times that we can think about passing around types in a similar way that we do variables. It should already be quite intuitive that we can pass a variable through as many layers of indirection as we please. Forget generics and types for a moment and think about an example of the form:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClass</span> {
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">t</span>: <span style="color:#66d9ef">number</span>) {}
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>(<span style="color:#a6e22e">u</span>: <span style="color:#66d9ef">number</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">MyClass</span>(<span style="color:#a6e22e">u</span>);
+    }
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">myClass</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">MyClass</span>.<span style="color:#a6e22e">create</span>(<span style="color:#ae81ff">2.17</span>);
+</code></pre></div><p>This is very similar to what is happening with the more-involved example, the difference being that we&rsquo;re working on generic type parameters, not variables. Here, <code>2.17</code> becomes the <code>u</code> in <code>create</code>, which ultimately becomes the <code>t</code> in the private constructor.</p>
+<p>In the case of generics:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClass</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> () {}
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">U</span>&gt;() {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">MyClass</span>&lt;<span style="color:#f92672">U</span>&gt;();
+    }
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">myClass</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">MyClass</span>.<span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">number</span>&gt;();
+</code></pre></div><p>The <code>U</code> passed to <code>create</code> is ultimately passed in as the <code>T</code> for <code>MyClass&lt;T&gt;</code>. When calling <code>create</code>, we provided <code>number</code> as <code>U</code>, thus now <code>U = number</code>. We put that <code>U</code> (which, again, is just <code>number</code>) into the <code>T</code> for <code>MyClass&lt;T&gt;</code>, so that <code>MyClass&lt;T&gt;</code> effectively becomes <code>MyClass&lt;number&gt;</code>. The benefit of generics is that we&rsquo;re opened up to be able to work with types in this abstract and high-level fashion, similar to how we can normal variables.</p>
+<p>The <code>from</code> method constructs a new list that operates on an array of elements of type <code>U</code>. It uses that type <code>U</code>, just like <code>create</code>, to construct a new instance of the <code>TypedList</code> class, now passing in that type <code>U</code> for <code>T</code>.</p>
+<p>The <code>where</code> instance method performs a filtering operation based upon a predicate function. There&rsquo;s no mapping happening, thus the types of all elements remain the same throughout. The <code>filter</code> method available on JavaScript&rsquo;s array returns a new array of values, which we pass into the <code>from</code> method. So, to be clear, after we filter out the values that don&rsquo;t satisfy the predicate function, we get an array back containing the elements that do. All those elements are still of type <code>T</code>, which is the original type that the caller passed to <code>create</code> when the list was first created. Those filtered elements get given to the <code>from</code> method, which in turn creates a new list containing all those values, still using that original type <code>T</code>. The reason why we return a new instance of the <code>TypedList</code> class is to be able to chain new method calls onto the return result. This adds an element of &ldquo;immutability&rdquo; to our list.</p>
+<p>Hopefully, this all provides you with a more intuitive example of generics in practice, and their reason for existence. Next, we&rsquo;ll look at a few of the more advanced topics.</p>
+<h2 id="generic-type-inference">Generic Type Inference</h2>
+<p>Throughout this article, in all cases where we&rsquo;ve used generics, we&rsquo;ve explicitly defined the type we&rsquo;re operating on. It&rsquo;s important to note that in most cases, we do not have to explicitly define the type parameter we pass in, for TypeScript can infer the type based on usage.</p>
+<p>If I have some function that returns a random number, and I pass the return result of that function to <code>identity</code> from earlier without specifying the type parameter, it will be inferred automatically as <code>number</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// `value` is inferred as type `number`.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">identity</span>(<span style="color:#a6e22e">getRandomNumber</span>());
+</code></pre></div><p>To demonstrate type inference, I&rsquo;ve removed all the technically extraneous type annotations from our <code>TypedList</code> structure earlier, and you can see, from the pictures below, that TSC still infers all types correctly:</p>
+<p><code>TypedList</code> without extraneous type declarations:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TypedList</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">T</span>[]) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">value</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">where</span>(<span style="color:#a6e22e">predicate</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">boolean</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">predicate</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">select</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">T</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">U</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">TypedList</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">selector</span>));
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">toArray() {</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">values</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">from</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values</span>: <span style="color:#66d9ef">U</span>[]) {
+        <span style="color:#75715e">// Perhaps we perform some logic here.
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>(<span style="color:#a6e22e">values</span>);
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">create</span>&lt;<span style="color:#f92672">U</span>&gt;(<span style="color:#a6e22e">values?</span>: <span style="color:#66d9ef">U</span>[]) {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TypedList</span>(<span style="color:#a6e22e">values</span> <span style="color:#f92672">??</span> []);
+    }
+
+    <span style="color:#75715e">// Other collection functions.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ..
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>Based on function return values and based on the input types passed into <code>from</code> and the constructor, TSC understands all type information. On the image below, I&rsquo;ve stitched multiple images together which shows Visual Studio&rsquo;s Code TypeScript&rsquo;s Language Extension (and thus the compiler) inferring all the types:</p>
+<p><img src="/understanding-typescript-generics/ts-type-inference.png" alt="Example of Type Inference happening implicitly"></p>
+<h2 id="generic-constraints">Generic Constraints</h2>
+<p>Sometimes, we want to put a constraint around a generic type. Perhaps we can&rsquo;t support every type in existence, but we can support a subset of them. Let&rsquo;s say we want to build a function that returns the length of some collection. As seen above, we could have many different types of arrays/collections, from the default JavaScript <code>Array</code> to our custom ones. How do we let our function know that some generic type has a <code>length</code> property attached to it? Similarly, how do restrict the concrete types we pass into the function to those that contain the data we need? An example such as this one, for instance, would not work:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getLength</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">collection</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">number</span> {
+    <span style="color:#75715e">// Error. TS does not know that a type T contains a `length` property.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">collection</span>.<span style="color:#a6e22e">length</span>;
+}
+</code></pre></div><p>The answer is to utilize Generic Constraints. We can define an interface that describes the properties we need:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IHasLength</span> {
+    <span style="color:#a6e22e">length</span>: <span style="color:#66d9ef">number</span>;
+}
+</code></pre></div><p>Now, when defining our generic function, we can constrain the generic type to be one that extends that interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getLength</span>&lt;<span style="color:#f92672">T</span> <span style="color:#a6e22e">extends</span> <span style="color:#a6e22e">IHasLength</span>&gt;(<span style="color:#a6e22e">collection</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">number</span> {
+    <span style="color:#75715e">// Restricting `collection` to be a type that contains
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// everything within the `IHasLength` interface.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">collection</span>.<span style="color:#a6e22e">length</span>;
+}
+</code></pre></div><h2 id="real-world-examples">Real-World Examples</h2>
+<p>In the next couple of sections, we&rsquo;ll discuss some real-world examples of generics that create more elegant and easy-to-reason about code. We&rsquo;ve seen a lot of trivial examples, but I want to discuss some approaches to error handling, data access patterns, and front-end React state/props.</p>
+<h2 id="real-world-examples---approaches-to-error-handling">Real-World Examples - Approaches to Error Handling</h2>
+<p>JavaScript contains a first-class mechanism for handling errors, as do most programming languages - <code>try</code>/<code>catch</code>. Despite that, I&rsquo;m not a very big fan of how it looks when used. That&rsquo;s not to say I don&rsquo;t use the mechanism, I do, but I tend to try and hide it as much as I can. By abstracting <code>try</code>/<code>catch</code> away, I can also reuse error handling logic across likely-to-fail operations.</p>
+<p>Suppose we&rsquo;re building some Data Access Layer. This is a layer of the application that wraps the persistence logic for dealing with the data storage method. If we&rsquo;re performing database operations, and if that database is used across a network, particular DB-specific errors and transient exceptions are likely to occur. Part of the reason for having a dedicated Data Access Layer is to abstract away the database from the business logic. Due to that, we can&rsquo;t be having such DB-specific errors being thrown up the stack and out of this layer. We need to wrap them first.</p>
+<p>Let&rsquo;s look at a typical implementation that would use <code>try</code>/<code>catch</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">queryUser</span>(<span style="color:#a6e22e">userID</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">User</span>&gt; {
+    <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbUser</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">raw</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">            SELECT * FROM users WHERE user_id = ?
+</span><span style="color:#e6db74">        `</span>, [<span style="color:#a6e22e">userID</span>]);
+        
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mapper</span>.<span style="color:#a6e22e">toDomain</span>(<span style="color:#a6e22e">dbUser</span>);
+    } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>) {
+        <span style="color:#66d9ef">switch</span> (<span style="color:#66d9ef">true</span>) {
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">DbErrorOne</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WrapperErrorOne</span>());
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">DbErrorTwo</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WrapperErrorTwo</span>());
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">NetworkError</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TransientException</span>());
+            <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">UnknownError</span>());
+        }
+    }
+}
+</code></pre></div><p>Switching over <code>true</code> is just a trick to be able to use the switch <code>case</code> statements for my error checking logic as opposed to having to declare a chain of if/else if.</p>
+<p>If we have multiple such functions, we have to replicate this error-wrapping logic, which is a very bad practice. It looks quite good for one function, but it&rsquo;ll be a nightmare with many. To abstract away this logic, we can wrap it in a custom error handling function that will pass through the result, but catch and wrap any errors should they be thrown:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withErrorHandling</span>&lt;<span style="color:#f92672">T</span>&gt;(
+    <span style="color:#a6e22e">dalOperation</span><span style="color:#f92672">:</span> () <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt;
+)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">try</span> {
+        <span style="color:#75715e">// This unwraps the promise and returns the type `T`.
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">dalOperation</span>();
+    } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>) {
+        <span style="color:#66d9ef">switch</span> (<span style="color:#66d9ef">true</span>) {
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">DbErrorOne</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WrapperErrorOne</span>());
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">DbErrorTwo</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WrapperErrorTwo</span>());
+            <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">instanceof</span> <span style="color:#a6e22e">NetworkError</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TransientException</span>());
+            <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">UnknownError</span>());
+        }
+    }
+}
+</code></pre></div><p>To ensure this makes sense, we have a function entitled <code>withErrorHandling</code> that accepts some generic type parameter <code>T</code>. This <code>T</code> represents the type of the successful resolution value of the promise we expect returned from the <code>dalOperation</code> callback function. Usually, since we&rsquo;re just returning the return result of the async <code>dalOperation</code> function, we wouldn&rsquo;t need to <code>await</code> it for that would wrap the function in a second extraneous promise, and we could leave the <code>await</code>ing to the calling code. In this case, we need to catch any errors, thus <code>await</code> is required.</p>
+<p>We can now use this function to wrap our DAL operations from earilier:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">queryUser</span>(<span style="color:#a6e22e">userID</span>: <span style="color:#66d9ef">string</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">withErrorHandling</span>&lt;<span style="color:#f92672">User</span>&gt;(<span style="color:#a6e22e">async</span> () <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbUser</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">raw</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">            SELECT * FROM users WHERE user_id = ?
+</span><span style="color:#e6db74">        `</span>, [<span style="color:#a6e22e">userID</span>]);
+        
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mapper</span>.<span style="color:#a6e22e">toDomain</span>(<span style="color:#a6e22e">dbUser</span>);
+    });
+}
+</code></pre></div><p>And there we go. We have a type-safe and error-safe function user query function.</p>
+<p>Additionally, as you saw earlier, if the TypeScript Compiler has enough information to infer the types implicitly, you don&rsquo;t have to explicitly pass them. In this case, TSC knows that the return result of the function is what the generic type is. Thus, if <code>mapper.toDomain(user)</code> returned a type of <code>User</code>, you wouldn&rsquo;t need to pass the type in at all:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">queryUser</span>(<span style="color:#a6e22e">userID</span>: <span style="color:#66d9ef">string</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">withErrorHandling</span>(<span style="color:#a6e22e">async</span> () <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbUser</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">raw</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">            SELECT * FROM users WHERE user_id = ?
+</span><span style="color:#e6db74">        `</span>, [<span style="color:#a6e22e">userID</span>]);
+        
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mapper</span>.<span style="color:#a6e22e">toDomain</span>(<span style="color:#a6e22e">user</span>);
+    });
+}
+</code></pre></div><p>Another approach to error handling that I tend to like is that of Monadic Types. The Either Monad is an algebraic data type of the form <code>Either&lt;T, U&gt;</code>, where <code>T</code> can represent an error type, and <code>U</code> can represent a failure type. Using Monadic Types hearkens to functional programming, and a major benefit is that errors become type-safe - a normal function signature doesn&rsquo;t tell the API caller anything about what errors that function might throw. Suppose we throw a <code>NotFound</code> error from inside <code>queryUser</code>. A signature of <code>queryUser(userID: string): Promise&lt;User&gt;</code> doesn&rsquo;t tell us anything about that. But, a signature like <code>queryUser(userID: string): Promise&lt;Either&lt;NotFound, User&gt;&gt;</code> absolutely does. I won&rsquo;t explain how monads like the Either Monad work in this article because they are extremely complex, and there are a variety of methods they must have to be considered monadic, such as mapping/binding.</p>
+<h2 id="real-world-examples---repository-pattern">Real-World Examples - Repository Pattern</h2>
+<p>Let&rsquo;s take a look at another use case where Generics might be helpful. Most back-end systems are required to interface with a database in some manner - this could be a relational database like PostgreSQL, a document database like MongoDB, or perhaps even a graph database, such as Neo4j.</p>
+<p>Since, as developers, we should aim for lowly coupled and highly cohesive designs, it would be a fair argument to consider what the ramifications of migrating database systems might be. It would also be fair to consider that different data access needs might prefer different data access approaches (this starts to get into CQRS a little bit). We should also consider automated testing. The majority of tutorials that explain the building of back-end systems with Node.js intermingle data access code with business logic with routing. That is, they tend to use MongoDB with the Mongoose ODM, taking an Active Record approach, and not having a clean separation of concerns. Such techniques are frowned upon in large applications, for the moment you decide you&rsquo;d like to migrate one database system for another, or the moment you realize that you&rsquo;d prefer a different approach to data access, etc., you have to rip out that old data access code, replace it with new code, and hope you didn&rsquo;t introduce any bugs to routing and business logic along the way.</p>
+<p>Sure, you might argue that unit and integration tests will prevent regressions, but if those tests find themselves coupled and dependent upon implementation details to which they should be agnostic, they too will likely break in the process.</p>
+<p>A common approach to solve this issue is the Repository Pattern. It says that to calling code, we should allow our data access layer to mimic a mere in-memory collection of objects or domain entities. In this way, we can let the business drive the design rather than the database (data model). For large applications, an architectural pattern called Domain-Driven Design becomes useful. Repositories, in the Repository Pattern, are components, most commonly classes, that encapsulate and hold internal all the logic to access data sources. With this, we can centralize data access code to one layer, making it easily testable and easily reusable. Further, we can place a mapping layer in between, permitting us to map database-agnostic domain models to a series of one-to-one table mappings. Each function available on the Repository could optionally use a different data access method if you so choose.</p>
+<p>There are many different approaches and semantics to Repositories, Units of Work, database transactions across tables, etc. Since this is an article about Generics, I don&rsquo;t want to get into the weeds too much, thus I&rsquo;ll illustrate a simple example here, but it&rsquo;s important to note that different applications have different needs. A Repository for DDD Aggregates would be quite different than what we&rsquo;re doing here, for instance. How I portray the Repository implementations here is not how I implement them in real projects, for there is a lot of missing functionality and less-than-desired architectural practices in use.</p>
+<p>Let&rsquo;s suppose we have <code>Users</code> and <code>Tasks</code> as domain models. These could just be POTOs - Plain-Old TypeScript Objects. There is no notion of a database baked into them, thus, you wouldn&rsquo;t call <code>User.save()</code>, for instance, as you would using Mongoose. Using the Repository Pattern, we might persist a user or delete a task from our business logic as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#75715e">// Querying the DB for a User by their ID.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">user</span>: <span style="color:#66d9ef">User</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">userRepository</span>.<span style="color:#a6e22e">findById</span>(<span style="color:#a6e22e">userID</span>);
+
+<span style="color:#75715e">// Deleting a Task by its ID.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">taskRepository</span>.<span style="color:#a6e22e">deleteById</span>(<span style="color:#a6e22e">taskID</span>);
+
+<span style="color:#75715e">// Deleting a Task by its owner&#39;s ID.
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">taskRepository</span>.<span style="color:#a6e22e">deleteByUserId</span>(<span style="color:#a6e22e">userID</span>);
+</code></pre></div><p>Clearly, you can see how all the messy and transient data access logic is hidden behind this repository facade/abstraction, making business logic agnostic to persistence concerns.</p>
+<p>Let&rsquo;s start by building a few simple domain models. These are the models that the application code will interact with. They are anemic here but would hold their own logic to satisfy business invariants in the real-world, that is, they wouldn&rsquo;t be mere data bags.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IHasIdentity</span> {
+    <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>;
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">IHasIdentity</span> {
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">constructor</span> (
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">_id</span>: <span style="color:#66d9ef">string</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">_username</span>: <span style="color:#66d9ef">string</span>
+    ) {}
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">get</span> <span style="color:#a6e22e">id() {</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_id</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">get</span> <span style="color:#a6e22e">username() {</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_username</span>; }
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Task</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">IHasIdentity</span> {
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">constructor</span> (
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">_id</span>: <span style="color:#66d9ef">string</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">_title</span>: <span style="color:#66d9ef">string</span>
+    ) {}
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">get</span> <span style="color:#a6e22e">id() {</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_id</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">get</span> <span style="color:#a6e22e">title() {</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_title</span>; }
+}
+</code></pre></div><p>You&rsquo;ll see in a moment why we extract identity typing information to an interface. This method of defining domain models and passing everything through the constructor is not how I&rsquo;d do it in the real world. Additionally, relying on an abstract domain model class would have been more preferable than the interface to get the <code>id</code> implementation for free.</p>
+<p>For the Repository, since, in this case, we expect that many of the same persistence mechanisms will be shared across different domain models, we can abstract our Repository methods to a generic interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IRepository</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">entity</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">findById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt;;
+    <span style="color:#a6e22e">updateById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">updated</span>: <span style="color:#66d9ef">T</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">deleteById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">void</span>&gt;;
+    <span style="color:#a6e22e">existsById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">boolean</span>&gt;;
+}
+</code></pre></div><p>We could go further and create a Generic Repository too to reduce duplication. For brevity, I won&rsquo;t do that here, and I should note that Generic Repository interfaces such as this one and Generic Repositories, in general, tend to be frowned upon, for you might have certain entities which are read-only, or write-only, or which can&rsquo;t be deleted, etc. It depends on the application. Also, we don&rsquo;t have a notion of a &ldquo;unit of work&rdquo; in order to share a transaction across tables, a feature I would implement in the real world, but, again, since this is a small demo, I don&rsquo;t want to get too technical.</p>
+<p>Let&rsquo;s start by implementing our <code>UserRepository</code>. I&rsquo;ll define an <code>IUserRepository</code> interface which holds methods specific to users, thus permitting calling code to depend on that abstraction when we dependency inject the concrete implementations:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUserRepository</span> <span style="color:#66d9ef">extends</span> <span style="color:#a6e22e">IRepository</span>&lt;<span style="color:#f92672">User</span>&gt; {
+    <span style="color:#a6e22e">existsByUsername</span>(<span style="color:#a6e22e">username</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">boolean</span>&gt;;
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserRepository</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">IUserRepository</span> {
+    <span style="color:#75715e">// There are 6 methods to implement here all using the 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// concrete type of `User` - Five from IRepository&lt;User&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// and the one above.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>The Task Repository would be similar but would contain different methods as the application sees fit.</p>
+<p>Here, we&rsquo;re defining an interface that extends a generic one, thus we have to pass the concrete type we&rsquo;re working on. As you can see from both interfaces, we have the notion that we send these POTO domain models in and we get them out. The calling code has no idea what the underlying persistence mechanism is, and that&rsquo;s the point.</p>
+<p>The next consideration to make is that depending on the data access method we choose, we&rsquo;ll have to handle database-specific errors. We could place Mongoose or the Knex Query Builder behind this Repository, for example, and in that case, we&rsquo;ll have to handle those specific errors - we don&rsquo;t want them to bubble up to business logic for that would break separation of concerns and introduce a larger degree of coupling.</p>
+<p>Let&rsquo;s define a Base Repository for the data access methods we wish to use that can handle errors for us:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseKnexRepository</span> {
+    <span style="color:#75715e">// A constructor.
+</span><span style="color:#75715e"></span>    
+     <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Wraps a likely to fail database operation within a function that handles errors by catching
+</span><span style="color:#75715e">     * them and wrapping them in a domain-safe error.
+</span><span style="color:#75715e">     * 
+</span><span style="color:#75715e">     * @param dalOp The operation to perform upon the database. 
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">async</span> <span style="color:#a6e22e">withErrorHandling</span>&lt;<span style="color:#f92672">T</span>&gt;(<span style="color:#a6e22e">dalOp</span><span style="color:#f92672">:</span> () <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt;) {
+        <span style="color:#66d9ef">try</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">dalOp</span>();
+        } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>) {
+            <span style="color:#75715e">// Use a proper logger:
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#a6e22e">e</span>);
+            
+            <span style="color:#75715e">// Handle errors properly here.
+</span><span style="color:#75715e"></span>        }
+    }
+}
+</code></pre></div><p>Now, we can extend this Base Class in the Repository and access that Generic method:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUserRepository</span> <span style="color:#66d9ef">extends</span> <span style="color:#a6e22e">IRepository</span>&lt;<span style="color:#f92672">User</span>&gt; {
+    <span style="color:#a6e22e">existsByUsername</span>(<span style="color:#a6e22e">username</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">boolean</span>&gt;;
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserRepository</span> <span style="color:#66d9ef">extends</span> <span style="color:#a6e22e">BaseKnexRepository</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">IUserRepository</span> {
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">dbContext</span>: <span style="color:#66d9ef">Knex</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">Knex</span>.<span style="color:#a6e22e">Transaction</span>;
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">private</span> <span style="color:#a6e22e">knexInstance</span>: <span style="color:#66d9ef">Knex</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">Knex</span>.<span style="color:#a6e22e">Transaction</span>) {
+        <span style="color:#66d9ef">super</span>();
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">dbContext</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">knexInstance</span>;
+    }
+    
+    <span style="color:#75715e">// Example `findById` implementation:
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">async</span> <span style="color:#a6e22e">findById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">User</span>&gt; {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">withErrorHandling</span>&lt;<span style="color:#f92672">User</span>&gt;(<span style="color:#a6e22e">async</span> () <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbUser</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">dbContext</span>&lt;<span style="color:#f92672">DbUser</span>&gt;()
+                .<span style="color:#a6e22e">select</span>()
+                .<span style="color:#a6e22e">where</span>({ <span style="color:#a6e22e">user_id</span>: <span style="color:#66d9ef">id</span> })
+                .<span style="color:#a6e22e">first</span>();
+                
+            <span style="color:#75715e">// Maps type DbUser to User    
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mapper</span>.<span style="color:#a6e22e">toDomain</span>(<span style="color:#a6e22e">dbUser</span>);
+        });
+    }
+    
+    <span style="color:#75715e">// There are 5 methods to implement here all using the 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// concrete type of `User`.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>Notice that our function retrieves a <code>DbUser</code> from the database and maps it to a <code>User</code> domain model before returning it. This is the Data Mapper pattern and it&rsquo;s crucial to maintaining separation of concerns. <code>DbUser</code> is a one-to-one mapping to the database table - it&rsquo;s the data model that the Repository operates upon - and is thus highly dependent on the data storage technology used. For this reason, <code>DbUser</code>s will never leave the Repository and will be mapped to a <code>User</code> domain model before being returned. I didn&rsquo;t show the <code>DbUser</code> implementation, but it could just be a simple class or interface.</p>
+<p>Thus far, using the Repository Pattern, powered by Generics, we&rsquo;ve managed to abstract away data access concerns into small units as well as maintain type-safety and re-usability.</p>
+<p>Finally, for the purposes of Unit and Integration Testing, let&rsquo;s say that we&rsquo;ll keep an in-memory repository implementation so that in a test environment, we can inject that repository, and perform state-based assertions on disk rather than mocking with a mocking framework. This method forces everything to rely on the public-facing interfaces rather than permitting tests to be coupled to implementation details. Since the only differences between each repository are the methods they choose to add under the <code>ISomethingRepository</code> interface, we can build a generic in-memory repository and extend that within type-specific implementations:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InMemoryRepository</span>&lt;<span style="color:#f92672">T</span> <span style="color:#a6e22e">extends</span> <span style="color:#a6e22e">IHasIdentity</span>&gt; <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">IRepository</span>&lt;<span style="color:#f92672">T</span>&gt; {
+    <span style="color:#66d9ef">protected</span> <span style="color:#a6e22e">entities</span>: <span style="color:#66d9ef">T</span>[] <span style="color:#f92672">=</span> [];
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">findById</span>(<span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">T</span>&gt; {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">entityOrNone</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">entities</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">entity</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">entity</span>.<span style="color:#a6e22e">id</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">id</span>);
+
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">entityOrNone</span> 
+            <span style="color:#f92672">?</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">entityOrNone</span>)
+            <span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">NotFound</span>());
+    }
+    
+    <span style="color:#75715e">// Implement the rest of the IRepository&lt;T&gt; methods here.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>The purpose of this base class is to perform all the logic for handling in-memory storage so that we don&rsquo;t have to duplicate it within in-memory test repositories. Due to methods like <code>findById</code>, this repository has to have an understanding that entities contain an <code>id</code> field, which is why the generic constraint on the <code>IHasIdentity</code> interface is necessary. We saw this interface before - it&rsquo;s what our domain models implemented.</p>
+<p>With this, when it comes to building the in-memory user or task repository, we can just extend this class and get most of the methods implemented automatically:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InMemoryUserRepository</span> <span style="color:#66d9ef">extends</span> <span style="color:#a6e22e">InMemoryRepository</span>&lt;<span style="color:#f92672">User</span>&gt; {
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">async</span> <span style="color:#a6e22e">existsByUsername</span>(<span style="color:#a6e22e">username</span>: <span style="color:#66d9ef">string</span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">boolean</span>&gt; {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">userOrNone</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">entities</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">entity</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">entity</span>.<span style="color:#a6e22e">username</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">username</span>);
+        <span style="color:#66d9ef">return</span> Boolean(<span style="color:#a6e22e">userOrNone</span>);
+
+        <span style="color:#75715e">// or, return !!userOrNone;
+</span><span style="color:#75715e"></span>    }
+    
+    <span style="color:#75715e">// And that&#39;s it here. InMemoryRepository implements the rest.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>Here, our <code>InMemoryRepository</code> needs to know that entities have fields such as <code>id</code> and <code>username</code>, thus we pass <code>User</code> as the generic parameter. <code>User</code> already implements <code>IHasIdentity</code>, so the generic constraint is satisfied, and we also state that we have a <code>username</code> property too.</p>
+<p>Now, when we wish to use these repositories from the Business Logic Layer, it&rsquo;s quite simple:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserService</span> {
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">constructor</span> (
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">userRepository</span>: <span style="color:#66d9ef">IUserRepository</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">readonly</span> <span style="color:#a6e22e">emailService</span>: <span style="color:#66d9ef">IEmailService</span>
+    ) {}
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">async</span> <span style="color:#a6e22e">createUser</span>(<span style="color:#a6e22e">dto</span>: <span style="color:#66d9ef">ICreateUserDTO</span>) {
+        <span style="color:#75715e">// Validate the DTO:
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>        
+        <span style="color:#75715e">// Create a User Domain Model from the DTO
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">user</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">userFactory</span>(<span style="color:#a6e22e">dto</span>);
+
+        <span style="color:#75715e">// Persist the Entity
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userRepository</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">user</span>);
+ 
+        <span style="color:#75715e">// Send a welcome email
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">emailService</span>.<span style="color:#a6e22e">sendWelcomeEmail</span>(<span style="color:#a6e22e">user</span>);
+    }
+}
+</code></pre></div><p>(Note that in a real application, we&rsquo;d probably move the call to <code>emailService</code> to a job queue as to not add latency to the request and in the hopes of being able to perform idempotent retries on failures (- not that email sending is particularly idempotent in the first place). Further, passing the whole user object to the service is questionable too).</p>
+<p>And there we go - using the Repository Pattern with the power of Generics, we&rsquo;ve completely decoupled our DAL from our BLL and have managed to interface with our repository in a type-safe manner. We&rsquo;ve also developed a way to rapidly construct equally type-safe in-memory repositories for the purposes of unit and integration testing, permitting true black-box and implementation-agnostic tests. None of this would have been possible without Generic types.</p>
+<p>As a disclaimer, I want to once again note that this Repository implementation is lacking in a lot. I wanted to keep the example simple since the focus is the utilization of generics, which is why I didn&rsquo;t handle the duplication or worry about transactions. Decent repository implementations would take an article all by themselves to explain fully and correctly, and the implementation details change depending on whether you&rsquo;re doing N-Tier Architecture or DDD. That means that if you wish to use the Repository Pattern, you should <strong>not</strong> look at my implementation here as in any way a best practice.</p>
+<h2 id="real-world-examples---react-state--props">Real-World Examples - React State &amp; Props</h2>
+<p>The state, ref, etc., hooks for React Functional Components are Generic too. If I have an interface containing properties for <code>Task</code>s, and I want to hold a collection of them in a React Component, I could do so as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tsx" data-lang="tsx"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">React</span>, { <span style="color:#a6e22e">useState</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;react&#39;</span>;
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">MyComponent</span>: <span style="color:#66d9ef">React.FC</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+    <span style="color:#75715e">// An empty array of tasks as the initial state:
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">tasks</span>, <span style="color:#a6e22e">setTasks</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>&lt;<span style="color:#f92672">Task</span><span style="color:#960050;background-color:#1e0010">[]</span>&gt;([]);
+    
+    <span style="color:#75715e">// A counter:
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Notice, type of `number` is inferred automatically.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">counter</span>, <span style="color:#a6e22e">setCounter</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#ae81ff">0</span>);
+    
+    <span style="color:#66d9ef">return</span> (
+        &lt;<span style="color:#f92672">div</span>&gt;
+            &lt;<span style="color:#f92672">h3</span>&gt;<span style="color:#a6e22e">Counter</span> <span style="color:#a6e22e">Value</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">counter</span>}&lt;/<span style="color:#f92672">h3</span>&gt;
+            &lt;<span style="color:#f92672">ul</span>&gt;
+                {
+                    <span style="color:#a6e22e">tasks</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">task</span> <span style="color:#f92672">=&gt;</span> (
+                        &lt;<span style="color:#f92672">li</span>&gt;
+                            &lt;<span style="color:#f92672">TaskItem</span> {<span style="color:#a6e22e">...task</span>} <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">id</span>} /&gt;
+                        &lt;/<span style="color:#f92672">li</span>&gt;
+                    ))
+                }
+            &lt;/<span style="color:#f92672">ul</span>&gt;
+        &lt;/<span style="color:#f92672">div</span>&gt;
+    );
+};
+</code></pre></div><p>Additionally, if we want to pass a series of props into our function, we can use the generic <code>React.FC&lt;T&gt;</code> type and get access to <code>props</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tsx" data-lang="tsx"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">React</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;react&#39;</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IProps</span> {
+    <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>;
+    <span style="color:#a6e22e">title</span>: <span style="color:#66d9ef">string</span>;
+    <span style="color:#a6e22e">description</span>: <span style="color:#66d9ef">string</span>;
+}
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">TaskItem</span>: <span style="color:#66d9ef">React.FC</span>&lt;<span style="color:#f92672">IProps</span>&gt; <span style="color:#f92672">=</span> (<span style="color:#a6e22e">props</span>) <span style="color:#f92672">=&gt;</span> {
+    <span style="color:#66d9ef">return</span> (
+        &lt;<span style="color:#f92672">div</span>&gt;
+            &lt;<span style="color:#f92672">h3</span>&gt;{<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">title</span>}&lt;/<span style="color:#f92672">h3</span>&gt;
+            &lt;<span style="color:#f92672">p</span>&gt;{<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">description</span>}&lt;/<span style="color:#f92672">p</span>&gt;
+        &lt;/<span style="color:#f92672">div</span>&gt;
+    );
+};
+</code></pre></div><p>The type of <code>props</code> is inferred automatically to be <code>IProps</code> by the TS Compiler.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, we&rsquo;ve seen many different examples of Generics and their use cases, from simple collections, to error handling approaches, to data access layer isolation, etc. Hopefully, this helps to open up the subject a little more, make the notion of Generics a little bit more intuitive, and bring across their true power.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="/tags/generics/">generics</a></span>
+        <span class="tag"><a href="/tags/typescript/">typescript</a></span>
+        <span class="tag"><a href="/tags/repository-pattern/">repository-pattern</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        10199 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2020-09-14 12:25 -0500
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+      <div class="pagination">
+        <div class="pagination__title">
+          <span class="pagination__title-h">Read other posts</span>
+          <hr />
+        </div>
+
+        <div class="pagination__buttons">
+          
+
+          
+            <span class="button next">
+              <a href="/posts/get-started-with-express/">
+                <span class="button__text">Getting Started With An Express And ES6&#43; JavaScript Stack</span>
+                <span class="button__icon">→</span>
+              </a>
+            </span>
+          
+        </div>
+      </div>
+    
+
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2020</span>
+            
+                <span><a href="/">Jamie Corkhill</a></span>
+            
+            
+            <span> <a href="/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.dc716e9092c9820b77f96da294d0120aeeb189b5bcea9752309ebea27fd53bbe6b13cffb2aca8ecf32525647ceb7001f76091de4199ac5a3caa432c070247f5b.js" integrity="sha512-3HFukJLJggt3&#43;W2ilNASCu6xibW86pdSMJ6&#43;on/VO75rE8/7KsqOzzJSVkfOtwAfdgkd5BmaxaPKpDLAcCR/Ww=="></script>
+
+
+
+    </body>
+</html>

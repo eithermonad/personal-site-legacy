@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jamie Corkhill</title>
+    <link>/</link>
+    <description>Recent content on Jamie Corkhill</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Sep 2020 14:27:44 -0500</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting Started With An Express And ES6&#43; JavaScript Stack</title>
+      <link>/posts/get-started-with-express/</link>
+      <pubDate>Sun, 13 Sep 2020 14:27:44 -0500</pubDate>
+      
+      <guid>/posts/get-started-with-express/</guid>
+      <description>This article is the second part in a series, with part one located here, which provided basic and (hopefully) intuitive insight into Node.js, ES6+ JavaScript, Callback Functions, Arrow Functions, APIs, the HTTP Protocol, JSON, MongoDB, and more.
+In this article, we&amp;rsquo;ll build upon the skills we attained in the previous one, learning how to implement and deploy a MongoDB Database for storing user booklist information, build an API with Node.js and the Express Web Application framework to expose that database and perform CRUD Operations upon it, and more.</description>
+    </item>
+    
+    <item>
+      <title>Get Started With Node: An Introduction To APIs, HTTP And ES6&#43; JavaScript</title>
+      <link>/posts/introduction-to-node/</link>
+      <pubDate>Sun, 13 Sep 2020 14:14:52 -0500</pubDate>
+      
+      <guid>/posts/introduction-to-node/</guid>
+      <description>You’ve probably heard of Node.js as being an “asynchronous JavaScript runtime built on Chrome’s V8 JavaScript engine”, and that it “uses an event-driven, non-blocking I/O model that makes it lightweight and efficient”. But for some, that is not the greatest of explanations.
+What is Node in the first place? What exactly does it mean for Node to be “asynchronous”, and how does that differ from “synchronous”? What is the meaning “event-driven” and “non-blocking” anyway, and how does Node fit into the bigger picture of applications, Internet networks, and servers?</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Age: 18. Software Developer. TypeScript, React, Node, C#. Lover of Enterprise Patterns, Physics. Learning DDD/CQRS/ES &amp;amp; Microservices.</description>
+    </item>
+    
+  </channel>
+</rss>
