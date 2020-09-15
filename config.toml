@@ -13,6 +13,7 @@ title = "Jamie Corkhill"
   description = "Homepage and blog by Jamie Corkhill"
   keywords = "homepage, blog, science, informatics, development, programming"
   images = [""]
+  readOtherPosts = "Read other posts"
 
   # Directory name of your blog content (default is `content/posts`)
   contentTypeName = "content/posts"
