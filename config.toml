@@ -73,3 +73,6 @@ title = "Jamie Corkhill"
     identifier = "blog"
     name       = "Blog"
     url        = "/posts"
+
+[permalinks]
+  posts = "/:year/:month/:title/"
