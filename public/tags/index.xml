@@ -6,9 +6,37 @@
     <description>Recent content in Tags on Jamie Corkhill</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Tue, 15 Sep 2020 18:19:12 -0500</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>chemistry</title>
+      <link>/tags/chemistry/</link>
+      <pubDate>Tue, 15 Sep 2020 18:19:12 -0500</pubDate>
+      
+      <guid>/tags/chemistry/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>katex</title>
+      <link>/tags/katex/</link>
+      <pubDate>Tue, 15 Sep 2020 18:19:12 -0500</pubDate>
+      
+      <guid>/tags/katex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mathematics</title>
+      <link>/tags/mathematics/</link>
+      <pubDate>Tue, 15 Sep 2020 18:19:12 -0500</pubDate>
+      
+      <guid>/tags/mathematics/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

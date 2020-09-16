@@ -6,10 +6,25 @@
     <description>Recent content on Jamie Corkhill</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Sep 2020 14:27:44 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2020 18:19:12 -0500</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Test Katex Integration</title>
+      <link>/2020/09/test-katex-integration/</link>
+      <pubDate>Tue, 15 Sep 2020 18:19:12 -0500</pubDate>
+      
+      <guid>/2020/09/test-katex-integration/</guid>
+      <description>An nth Partial Sum:
+$$ \sum_{i=1}^n i = \frac{n(n-1)}{2} $$
+A code example:
+int main(int argc, char *argv[]) { int count = 0; int max = argv[1]; for (int i = 1; i &amp;lt;= max; i++) { count += i; } std::cout &amp;lt;&amp;lt; &amp;#34;Sum: &amp;#34; &amp;lt;&amp;lt; count &amp;lt;&amp;lt; std::endl; } Product $\prod_{i=a}^{b} f(i)$ inside text.
+A chemical formula:
+$C_p[\ce{H2O(l)}] = \pu{75.3 J // mol K}$
+A little bit more complex:</description>
+    </item>
     
     <item>
       <title>Getting Started With An Express And ES6&#43; JavaScript Stack</title>
